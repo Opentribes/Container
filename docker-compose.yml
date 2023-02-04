@@ -9,12 +9,13 @@ services:
       - 443:443
     networks:
       - opentribes
+    working_dir: /var/www/html
     environment:
       - DOCUMENT_ROOT=${DOCUMENT_ROOT:-/var/www/html/FrameworkNew/public}
       - DOMAIN=${DOMAIN:-opentribes.local}
     volumes:
       - ./../Core:/var/www/html
-      - ./proxy/default.conf.template:/etc/nginx/templates/default.conf.template:ro
+      - ./proxy/default.conf:/etc/nginx/templates/default.conf.template:ro
       - logs:/var/log
   php:
     container_name: php
@@ -26,10 +27,25 @@ services:
         ENV: ${ENV:-production}
     networks:
       - opentribes
+    working_dir: /var/www/html
     volumes:
       - ./../Core:/var/www/html
       - ./php/php-ini-overrides.ini:/usr/local/etc/php/conf.d/extra.ini
       - logs:/var/log
+  node:
+    container_name: node
+    ports:
+      - 5173:5173
+    build:
+      context: node
+      args:
+        NODE_VERSION: ${NODE_VERSION:-19-alpine}
+    user: "1000:1000"
+    working_dir: /home/node/app
+    networks:
+      - opentribes
+    volumes:
+      - ./../Core/GameClient:/home/node/app
   database:
     image: mariadb:${MARIADB_VERSION:-latest}
     container_name: mariadb

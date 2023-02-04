@@ -1,0 +1,52 @@
+version: "3"
+
+services:
+  proxy:
+    image: nginx:${NGINX_VERSION:-alpine}
+    container_name: proxy
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - opentribes
+    volumes:
+      - ./../Core:/var/www/html
+      - ./proxy/nginx.conf:/etc/nginx/nginx.conf
+      - logs:/var/log
+  php:
+    container_name: php
+    user: "1000:1000"
+    build:
+      context: php
+      args:
+        PHP_VERSION: ${PHP_VERSION:-8.2}
+        ENV: ${ENV:-production}
+    networks:
+      - opentribes
+    volumes:
+      - ./../Core:/var/www/html
+      - ./php/php-ini-overrides.ini:/usr/local/etc/php/conf.d/extra.ini
+      - logs:/var/log
+  database:
+    image: mariadb:${MARIADB_VERSION:-latest}
+    container_name: mariadb
+    networks:
+      - opentribes
+    ports: 
+      - ${DB_PUBLIC_PORT:-3306}:3306
+    environment: 
+      - MYSQL_USER=${MYSQL_USER:-dev}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:-dev}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-root}
+    volumes:
+      - db:/var/lib/mysql
+
+volumes:
+  logs:
+    name: opentribes_logs
+  db:
+    name: opentribes_db
+
+networks:
+  opentribes:
+    name: opentribes_network

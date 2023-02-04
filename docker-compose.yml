@@ -9,9 +9,12 @@ services:
       - 443:443
     networks:
       - opentribes
+    environment:
+      - DOCUMENT_ROOT=${DOCUMENT_ROOT:-/var/www/html/FrameworkNew/public}
+      - DOMAIN=${DOMAIN:-opentribes.local}
     volumes:
       - ./../Core:/var/www/html
-      - ./proxy/nginx.conf:/etc/nginx/nginx.conf
+      - ./proxy/default.conf.template:/etc/nginx/templates/default.conf.template:ro
       - logs:/var/log
   php:
     container_name: php

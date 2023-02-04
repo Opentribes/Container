@@ -1,14 +1,9 @@
-events {
-  worker_connections  1024;
-}
-http {
-    index    index.php index.html index.htm;
+  server{
 
-    server {
-        listen  80;
-        root ${DOCUMENT_ROOT};
-        server_name ${DOMAIN} www.${DOMAIN};
-        location / {
+   root ${DOCUMENT_ROOT};
+   server_name ${DOMAIN} www.${DOMAIN};
+   index    index.php index.html index.htm;
+     location / {
             try_files $uri $uri/ /index.php?$args;
         }
 
@@ -18,5 +13,4 @@ http {
              fastcgi_pass   php:9000;
              include /etc/nginx/fastcgi_params;
         }
-    }
-}
+   }

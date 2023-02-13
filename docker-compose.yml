@@ -34,18 +34,19 @@ services:
       - logs:/var/log
   node:
     container_name: node
-    ports:
-      - 5173:5173
     build:
       context: node
       args:
         NODE_VERSION: ${NODE_VERSION:-19-alpine}
     user: "1000:1000"
-    working_dir: /home/node/app
+    working_dir: /home/node/app/GameClient
+    restart: always
+    ports:
+      - 1234:1234
     networks:
       - opentribes
     volumes:
-      - ./../Core/GameClient:/home/node/app
+      - ./../Core:/home/node/app
   database:
     image: mariadb:${MARIADB_VERSION:-latest}
     container_name: mariadb

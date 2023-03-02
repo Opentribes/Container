@@ -3,3 +3,4 @@
 !.keepme
 /.idea
 !.env.dist
+/php/coverage/*.xml

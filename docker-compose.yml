@@ -24,13 +24,14 @@ services:
       context: php
       args:
         PHP_VERSION: ${PHP_VERSION:-8.2}
-        ENV: ${ENV:-production}
+        ENV: ${ENV:-dev}
     networks:
       - opentribes
     working_dir: /var/www/html
     volumes:
       - ./../Core:/var/www/html
-      - ./php/php-ini-overrides.ini:/usr/local/etc/php/conf.d/extra.ini
+      - ./php/php-ini-overrides.ini:/usr/local/etc/php/conf.d/docker-custom.ini
+      - ./php/coverage:/opt/phpstorm-coverage
       - logs:/var/log
   node:
     container_name: node
